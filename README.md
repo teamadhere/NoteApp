@@ -1,2 +1,2 @@
 # NoteApp
-This is a note app created using HTML,CsS and js
+This is a note app created using HTML,CSS and js 
