@@ -1,9 +1,14 @@
-card{
-    align-items: center;
+#search-btn {
+  color: white;
 }
-body{
-    background-color:rgba(0, 255, 179, 0.178);
+#search-btn:hover {
+  background-color: white;
+  color: black;
 }
-#btn{
-    margin-bottom: 0;
+
+#addTxt {
+  box-shadow: 0 0 10px 2px;
+}
+textarea {
+  resize: none;
 }

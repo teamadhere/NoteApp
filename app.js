@@ -1,5 +1,5 @@
  
-console.log("Welcome to notes app. This is app.js");
+console.log("WELCOME TO NOTEAPP! GREATING FORM TEAM ADHERE");
 showNotes();
 
 // If user adds a note, add it to the localStorage
@@ -34,7 +34,9 @@ function showNotes() {
                     <div class="card-body">
                         <h5 class="card-title">Note ${index + 1}</h5>
                         <p class="card-text"> ${element}</p>
-                        <button id="${index}"onclick="deleteNote(this.id)" class="btn btn-primary">Delete Note</button>
+                        <div class="d-flex justify-content-center">
+                        <button id="${index}"onclick="deleteNote(this.id)" class="btn btn-danger">Delete Note</button>
+                        </div>
                     </div>
                 </div>`;
   });
