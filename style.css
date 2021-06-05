@@ -1,0 +1,9 @@
+card{
+    align-items: center;
+}
+body{
+    background-color:rgba(0, 255, 179, 0.178);
+}
+#btn{
+    margin-bottom: 0;
+}
