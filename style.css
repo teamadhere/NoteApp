@@ -9,7 +9,10 @@
 
 .form-group {
   box-shadow: 0 0 10px 2px;
+
+  border-radius: ;
   font-family:Marker Felt, fantasy;
+  
 }
 textarea {
   resize: none;

@@ -5,24 +5,18 @@ showNotes();
 let addBtn = document.getElementById("addBtn");
 addBtn.addEventListener("click", function (e) {
   let addTxt = document.getElementById("addTxt");
-  let addTitle = document.getElementById("addTitle");
   let notes = localStorage.getItem("notes");
-  let title = localStorage.getItem("title");
 
-  if (notes && title == null) {
+  if (notes == null) {
     notesObj = [];
-    titleObj = [];
+  
   } else {
     notesObj = JSON.parse(notes);
-    titleObj = JSON.parse(title);
   }
   notesObj.push(addTxt.value);
-  titleObj.push(addTitle.value);
   
   localStorage.setItem("notes", JSON.stringify(notesObj));
-  localStorage.setItem("title", JSON.stringify(titleObj));
   addTxt.value = "";
-  addTitle.value = "";
   //   console.log(notesObj);
   showNotes();
 });
@@ -42,12 +36,13 @@ function showNotes() {
                     <div class="card-body">
                         <h5 class="card-title">Note ${index + 1}</h5>
                         <p class="card-text"> ${element}</p>
-                        <div class="d-flex justify-content-center">
+                        <button id="${index}"onclick="editNote(this.id)" class="btn btn-success">Edit</button>
                         <button id="${index}"onclick="deleteNote(this.id)" class="btn btn-danger">Delete Note</button>
-                        </div>
+                        
                     </div>
                 </div>`;
   });
+
   let notesElm = document.getElementById("notes");
   if (notesObj.length != 0) {
     notesElm.innerHTML = html;
@@ -55,6 +50,37 @@ function showNotes() {
     notesElm.innerHTML = `Nothing to show! Use "Add a Note" section above to add notes.`;
   }
 }
+//Function to Edit Notes
+function editNote(index){
+
+  let saveindex = document.getElementById("saveindex");
+  let saveBtn = document.getElementById("saveBtn");
+  let addBtn = document.getElementById("addBtn");
+  saveindex.value = index;
+  let notes = localStorage.getItem("notes");
+  let notesObj =JSON.parse(notes);
+  addTxt.value= notesObj[index];
+  addBtn.style.display="none";
+  saveBtn.style.display="block";
+
+
+}
+
+//function to save edited notes
+let saveBtn = document.getElementById("saveBtn");
+saveBtn.addEventListener("click", function (){
+    let notes = localStorage.getItem("notes");
+    let notesObj = JSON.parse(notes);
+    let saveindex = document.getElementById("saveindex").value;
+    notesObj[saveindex]=addTxt.value;
+    saveBtn.style.display="none"
+    addBtn.style.display="block"
+    addTxt.value=""
+    localStorage.setItem("notes", JSON.stringify(notesObj));
+    showNotes();
+})
+
+
 
 // Function to delete a note
 function deleteNote(index) {
