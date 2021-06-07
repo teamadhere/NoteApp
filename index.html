@@ -1,90 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link href="data:image/x-icon;base64,AAABAAEAEBAAAAAAAABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAD///8B////Af///wHx8fEDlJSU0V5eXvFycnKFwcHBE////wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B09PTV4mJif9XVlf/QUBB/1JSUvFmZmaDtra2Ef///wH///8B////Af///wH///8B////Af///wH///8B////Ac7Ozs2enp7/Rj9F/1tTWv9hXGH/SklK/0JCQu9ZWVmBsrKyEf///wH///8B////Af///wH///8B////AfDw8APj4+PVh4SG/0xES/9kXGP/kYmQ/7Cor/+Pio7/XFlb/zc3N+1LS0t7sbGxDf///wH///8B////Af///wH///8BS0tLJ3Ntcv0pJyj/QDw//3dxdv+xqq//vbW8/6+nrv+mn6X/YFxf/y4tLuksLCxV////Af///wH///8B////AVJMUbNHQ0b/Kioq/z89Pv9OTU39VlRV/3Btb/+Gf4X/npad/5uTmv+HgIb/Z2Nmm////wH///8B////ASQlJhUzLzL7R0JG/2NdY/9raGv9ZGNk/2JgYv1VVFX/MTEx/zEvMf9fWl//aWJoo2VfZA3///8B////Af///wEyNDVHQEBA/0xLTP9MSkv/Z2Rn/6Kdof+8trv/jouO/VRSVP1ST1L3d3F2Zf///wH///8B////Af///wH///8BJCYmaR0dHf8pJy7/Njpd/0A9WP87P1D/MTAx/0pHSv9TT1PhdnB1Mf///wH///8B////Af///wH///8B////ARkZHokSEiz/FhU5/w1Upv8PRaf/FD+f/xU9kv8YN3f/Okxx3f///wH///8B////Af///wH///8B////Af///wETETCpC2ao/wldp/8PLpT/Dzd6/xA4ef8SIlj/M1WP/1Njiv9lZWUb////Af///wH///8B////Af///wH///8BDw8RyRQTJ/8WIkb/FS1Y/xE2d/8QPnT/FxYX/1xcXP9TU1P/UFBQVf///wH///8B////Af///wH///8B////AQ0OD4kVFhfBGRob5REREv0PDw//EBAQ/ycnJ/9OTk7/PT09/z4+Po////8B////Af///wH///8B////Af///wH///8B////Af///wEnKC4LFBUbLRMUFlEqKy1xQ0RGk0RERbc2Nzij////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B8f8AAPB/AADgHwAA4A8AAPADAADgAQAA4AMAAOAPAADgHwAAwB8AAMAfAADAHwAAwA8AAP+PAAD//wAA//8AAA=="
+        rel="icon" type="image/x-icon" />
     <title>Notes App</title>
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
-    />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
     <link rel="stylesheet" href="style.css" />
-  </head>
+</head>
 
-  <body>
+<body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">Notes APP</a>
+        <a class="navbar-brand" href="#">Notes APP</a>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto"></ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input
-            class="form-control mr-sm-2"
-            id="searchTxt"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-          />
-          <button
-            class="btn btn-outline-success my-2 my-sm-0"
-            type="submit"
-            id="search-btn"
-          >
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto"></ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" id="searchTxt" type="search" placeholder="Search" aria-label="Search" />
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="search-btn">
             Search
           </button>
-        </form>
-      </div>
+            </form>
+        </div>
     </nav>
     <div class="container my-3">
-      <h1>Welcome To Magic Notes</h1>
-      <div class="card border-0">
-        <div class="card-body" id="cardbody" :hover>
-          <div class="form-group rounded">
-            
-            <textarea
-              class="form-control border-0"
-              id="addTxt"
-              rows="3"
-              placeholder="Take A Note...."
-            ></textarea>
-            <input type="hidden" id="saveindex">
-          </div>
-          <div class="d-flex justify-content-center">
-            <button class="btn btn-success mx-2" id="addBtn">Add Note</button>
-            <button
-              class="btn btn-success mx-2"
-              style="display: none"
-              id="saveBtn"
-            >
+        <h1>Welcome To Magic Notes</h1>
+        <div class="card border-0">
+            <div class="card-body" id="cardbody" :hover>
+                <div class="form-group rounded">
+
+                    <textarea class="form-control border-0" id="addTxt" rows="3" placeholder="Take A Note...."></textarea>
+                    <input type="hidden" id="saveindex">
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-success mx-2" id="addBtn">Add Note</button>
+                    <button class="btn btn-success mx-2" style="display: none" id="saveBtn">
               Save Note
             </button>
-          </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <hr />
-      <h1>Your Notes</h1>
-      <hr />
-      <div id="notes" class="row container-fluid"></div>
+        <hr />
+        <h1>Your Notes</h1>
+        <hr />
+        <div id="notes" class="row container-fluid"></div>
     </div>
 
-    <script
-      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="app.js"></script>
-  </body>
+</body>
+
 </html>
