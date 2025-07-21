@@ -9,8 +9,8 @@
 
 .form-group {
     box-shadow: 0 0 10px 2px;
-    border-radius: ;
-    font-family: Marker Felt, fantasy;
+    border-radius: 5px;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
 }
 
 textarea {
