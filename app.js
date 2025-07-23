@@ -1,177 +1,228 @@
-console.log("WELCOME TO NOTEAPP! GREATING FORM TEAM ADHERE");
+console.log("WELCOME TO NOTEAPP! GREETING FROM TEAM ADHERE");
+
+// --- Firebase config --- (MOVE THIS TO THE TOP)
+const firebaseConfig = {
+  apiKey: "AIzaSyAyfsonnOU2zsmoZsbyEgA6X7cB9iwtCb8",
+  authDomain: "notesapp-a8f31.firebaseapp.com",
+  projectId: "notesapp-a8f31",
+  storageBucket: "notesapp-a8f31.firebasestorage.app",
+  messagingSenderId: "184190884818",
+  appId: "1:184190884818:web:a86c86b795909bb313860b",
+  measurementId: "G-VETZF2K6F3"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+let currentUser = null; // Initialize before use
 showNotes();
+let inputPinned = false;
+function toggleInputPin() {
+    const pinBtn = document.getElementById('pinBtn');
+    if (pinBtn) {
+        pinBtn.classList.toggle('active');
+    }
+}
 
 // If user adds a note, add it to the localStorage
-let addBtn = document.getElementById("addBtn");
-if (addBtn) {
-  addBtn.addEventListener("click", function () {
-    let addTxt = document.getElementById("addTxt");
-    let notes = localStorage.getItem("notes");
-    let errorMsg = document.getElementById("errorMsg");
+// Removed Add Note button logic since we're auto-saving
 
-    if (!addTxt) {
-      if (errorMsg) {
-        errorMsg.innerText = "Note input not found!";
-        errorMsg.style.display = "block";
-      }
-      return;
-    }
-
-    if (addTxt.value.trim() === "") {
-      if (errorMsg) {
-        errorMsg.innerText = "Note cannot be empty!";
-        errorMsg.style.display = "block";
-      }
-      return;
-    } else if (errorMsg) {
-      errorMsg.innerText = "";
-      errorMsg.style.display = "none";
-    }
-
-    let notesObj;
-    if (notes == null) {
-      notesObj = [];
-    } else {
-      notesObj = JSON.parse(notes);
-    }
-    notesObj.push(addTxt.value);
-
-    localStorage.setItem("notes", JSON.stringify(notesObj));
-    addTxt.value = "";
-    showNotes();
-  });
-}
-let addTxt = document.getElementById("addTxt");
-if (addTxt) {
-  addTxt.addEventListener("input", function () {
-    let errorMsg = document.getElementById("errorMsg");
-    if (addTxt.value.trim() !== "" && errorMsg && errorMsg.style.display === "block") {
-      errorMsg.innerText = "";
-      errorMsg.style.display = "none";
-    }
-  });
-}
-// Function to show elements from localStorage
+// Update showNotes function
 function showNotes() {
-  let notes = localStorage.getItem("notes");
-  let notesObj = notes == null ? [] : JSON.parse(notes);
-  let html = "";
-  notesObj.forEach(function (element, index) {
-    html += `
-      <div class="noteCard my-2 mx-2 card" style="width: 18rem;">
-      <div class="card-body">
-        <h5 class="card-title">Note ${index + 1}</h5>
-        <p class="card-text"> ${element}</p>
-        <button id="${index}" onclick="openEditModal(${index})" class="btn btn-success">
-          <i class="bi bi-pencil-square"></i> Edit
+  if (!currentUser) return;
+  db.collection('notes')
+    .where('uid', '==', currentUser.uid)
+    .orderBy('pinned', 'desc')
+    .orderBy('created', 'desc')
+    .get()
+    .then(snapshot => {
+      let html = "";
+      snapshot.forEach(doc => {
+        const note = doc.data();
+        html += `
+  <div class="noteCard card shadow-sm m-2 p-3" style="width: 18rem; background: #fffde7;">
+    <div class="card-body">
+      <h5 class="card-title">${note.title}</h5>
+      <p class="card-text">${note.text}</p>
+      <div class="d-flex justify-content-end gap-2">
+        <button class="btn btn-outline-danger btn-sm" title="Delete" onclick="showDeleteConfirm('${doc.id}')">
+          <i class="bi bi-trash"></i>
         </button>
-        <button id="${index}" onclick="showDeleteConfirm(${index})" class="btn btn-danger">
-          <i class="bi bi-trash"></i> Delete Note
+        <button class="btn btn-outline-primary btn-sm" title="Edit" onclick='openEditModal("${doc.id}", ${JSON.stringify(note).replace(/'/g, "&apos;").replace(/"/g, "&quot;")})'>
+          <i class="bi bi-pencil"></i>
+        </button>
+        <button class="btn btn-outline-warning btn-sm" title="${note.pinned ? 'Unpin' : 'Pin'}" onclick="togglePin('${doc.id}', ${note.pinned})">
+          <i class="bi ${note.pinned ? 'bi-pin-angle-fill' : 'bi-pin-angle'}"></i>
         </button>
       </div>
-      </div>`;
-  });
-
-  let notesElm = document.getElementById("notes");
-  if (notesObj.length != 0) {
-    notesElm.innerHTML = html;
-  } else {
-    notesElm.innerHTML = `Nothing to show! Use "Add a Note" section above to add notes.`;
-  }
+    </div>
+  </div>
+`;
+      });
+      document.getElementById("notes").innerHTML = html;
+    });
 }
 
-
-//function to save edited notes
-let saveBtn = document.getElementById("saveBtn");
-saveBtn.addEventListener("click", function (){
-    let notes = localStorage.getItem("notes");
-    let notesObj = JSON.parse(notes);
-    let saveindex = document.getElementById("saveindex").value;
-    notesObj[saveindex]=addTxt.value;
-    saveBtn.style.display="none"
-    addBtn.style.display="block"
-    addTxt.value=""
-    localStorage.setItem("notes", JSON.stringify(notesObj));
-    showNotes();
-})
-
-function openEditModal(index) {
-  const notes = JSON.parse(localStorage.getItem('notes')) || [];
-  document.getElementById('editNoteTxt').value = notes[index];
-  document.getElementById('saveEditBtn').setAttribute('data-index', index);
+// --- Edit Modal Logic ---
+function openEditModal(docId, note) {
+  document.getElementById('editNoteTitle').value = note.title;
+  document.getElementById('editNoteTxt').value = note.text;
+  document.getElementById('saveEditBtn').setAttribute('data-docid', docId);
   document.getElementById('editErrorMsg').style.display = 'none';
   const editModal = new bootstrap.Modal(document.getElementById('editNoteModal'));
   editModal.show();
 }
 
-// Handle Save in modal
 document.getElementById('saveEditBtn').addEventListener('click', function() {
-  const index = this.getAttribute('data-index');
+  const docId = this.getAttribute('data-docid');
+  const newTitle = document.getElementById('editNoteTitle').value.trim();
   const newText = document.getElementById('editNoteTxt').value.trim();
-  if (!newText) {
-    document.getElementById('editErrorMsg').textContent = 'Note text cannot be empty!';
+  if (!newTitle || !newText) {
+    document.getElementById('editErrorMsg').textContent = 'Title and note text cannot be empty!';
     document.getElementById('editErrorMsg').style.display = 'block';
     return;
   }
-  const notes = JSON.parse(localStorage.getItem('notes')) || [];
-  notes[index] = newText;
-  localStorage.setItem('notes', JSON.stringify(notes));
-  showNotes();
-  // Optionally, hide modal after saving
-  const editModal = bootstrap.Modal.getInstance(document.getElementById('editNoteModal'));
-  if (editModal) editModal.hide();
-});
-
-// Function to delete a note
-function deleteNote(index) {
-  //   console.log("I am deleting", index);
-
-  let notes = localStorage.getItem("notes");
-  if (notes == null) {
-    notesObj = [];
-  } else {
-    notesObj = JSON.parse(notes);
-  }
-
-  notesObj.splice(index, 1);
-  localStorage.setItem("notes", JSON.stringify(notesObj));
-  showNotes();
-}
-
-let search = document.getElementById("searchTxt");
-search.addEventListener("input", function () {
-  let inputVal = search.value.toLowerCase();
-  let noteCards = document.getElementsByClassName("noteCard");
-  Array.from(noteCards).forEach(function (element) {
-    let cardTxt = element.getElementsByTagName("p")[0].innerText;
-    if (inputVal === "" || cardTxt.toLowerCase().includes(inputVal)) {
-      element.style.display = "block";
-    } else {
-      element.style.display = "none";
-    }
+  db.collection('notes').doc(docId).update({
+    title: newTitle,
+    text: newText
+  }).then(() => {
+    showNotes();
+    const editModal = bootstrap.Modal.getInstance(document.getElementById('editNoteModal'));
+    if (editModal) editModal.hide();
   });
 });
 
-// Show delete confirmation modal
-function showDeleteConfirm(index) {
-  deleteIndex = index;
+// --- Delete Modal Logic ---
+let deleteDocId = null;
+function showDeleteConfirm(docId) {
+  deleteDocId = docId;
   const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
   deleteModal.show();
 }
-
-// Handle confirm delete
 document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
-  if (deleteIndex !== null) {
-    let notes = localStorage.getItem("notes");
-    let notesObj = notes ? JSON.parse(notes) : [];
-    notesObj.splice(deleteIndex, 1);
-    localStorage.setItem("notes", JSON.stringify(notesObj));
-    showNotes();
-    const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
-    if (deleteModal) deleteModal.hide();
-    deleteIndex = null;
+  if (deleteDocId) {
+    db.collection('notes').doc(deleteDocId).delete().then(() => {
+      showNotes();
+      const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
+      if (deleteModal) deleteModal.hide();
+      deleteDocId = null;
+    });
   }
 });
 
-let deleteIndex = null;
+// Function to toggle pin status
+function togglePin(docId, currentPinned) {
+  db.collection('notes').doc(docId).update({
+    pinned: !currentPinned
+  }).then(showNotes);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const addTitle = document.getElementById('addTitle');
+    const addTxt = document.getElementById('addTxt');
+    const noteInputGroup = document.getElementById('noteInputGroup');
+    const errorMsg = document.getElementById('errorMsg');
+
+    function showTitle() {
+        addTitle.classList.remove('d-none');
+    }
+
+    function hideTitleIfEmpty() {
+        if (!addTitle.value && document.activeElement !== addTitle && document.activeElement !== addTxt) {
+            addTitle.classList.add('d-none');
+        }
+    }
+
+    function autoSaveIfNeeded() {
+      if (addTitle.value.trim() || addTxt.value.trim()) {
+        if (currentUser) {
+          db.collection('notes').add({
+            uid: currentUser.uid,
+            title: addTitle.value,
+            text: addTxt.value,
+            pinned: inputPinned,
+            created: firebase.firestore.FieldValue.serverTimestamp()
+          }).then(() => {
+            addTitle.value = "";
+            addTxt.value = "";
+            showNotes();
+            inputPinned = false;
+            toggleInputPin();
+            if (errorMsg) {
+              errorMsg.innerText = "";
+              errorMsg.style.display = "none";
+            }
+          });
+        }
+      }
+      hideTitleIfEmpty();
+    }
+
+    addTxt.addEventListener('focus', showTitle);
+    addTitle.addEventListener('focus', showTitle);
+
+    // On blur, check if both fields are not focused, then auto-save if needed
+    function handleBlur() {
+        setTimeout(() => {
+            if (document.activeElement !== addTitle && document.activeElement !== addTxt) {
+                autoSaveIfNeeded();
+            }
+        }, 100);
+    }
+
+    addTxt.addEventListener('blur', handleBlur);
+    addTitle.addEventListener('blur', handleBlur);
+
+    // Hide title on load if empty
+    hideTitleIfEmpty();
+});
+
+
+const loginBtn = document.getElementById('loginBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+const userInfo = document.getElementById('user-info');
+const loginModal = document.getElementById('loginModal');
+
+loginBtn.onclick = () => {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider);
+};
+
+logoutBtn.onclick = () => auth.signOut();
+
+// Show login modal if not logged in
+function showLoginModal() {
+  if (loginModal) {
+    loginModal.classList.add('show');
+    loginModal.style.display = 'flex';
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) mainContent.classList.add('modal-blur');
+  }
+}
+function hideLoginModal() {
+  if (loginModal) {
+    loginModal.classList.remove('show');
+    loginModal.style.display = 'none';
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) mainContent.classList.remove('modal-blur');
+  }
+}
+
+auth.onAuthStateChanged(user => {
+  if (user) {
+    currentUser = user;
+    loginBtn.classList.add('d-none');
+    logoutBtn.classList.remove('d-none');
+    userInfo.innerHTML = `<img src="${user.photoURL}" class="rounded-circle" width="32" height="32" alt="User"/> <span class="ms-2">${user.displayName}</span>`;
+    hideLoginModal();
+    showNotes();
+  } else {
+    currentUser = null;
+    loginBtn.classList.remove('d-none');
+    logoutBtn.classList.add('d-none');
+    userInfo.innerHTML = '';
+    document.getElementById("notes").innerHTML = '';
+    showLoginModal();
+  }
+});
 
