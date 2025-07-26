@@ -1,7 +1,7 @@
 // notes.js
 // Note CRUD operations, UI rendering, and event handlers
 import { currentUser } from './auth.js'; // Current authenticated user
-
+import { db } from './firebase.js'; // Firestore database instance
 import { showModal } from './modal.js';
 
 // State variables

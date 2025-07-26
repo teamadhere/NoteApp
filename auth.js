@@ -3,6 +3,7 @@
 
 import { auth } from './firebase.js';
 import { showModal } from './modal.js';
+import { showNotes } from './notes.js';
 
 export let currentUser = null;
 
@@ -63,6 +64,7 @@ export function setupAuthHandlers() {
         userDropdown.style.display = 'block';
       }
       hideLoginModal();
+      showNotes();
     } else {
       currentUser = null;
       loginBtn.classList.remove('d-none');
@@ -70,6 +72,7 @@ export function setupAuthHandlers() {
         userAvatar.src = '';
         userDropdown.style.display = 'none';
       }
+      showNotes();
       // No auto-popup on logout, just show login button
     }
   });
