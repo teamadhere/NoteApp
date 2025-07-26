@@ -35,12 +35,19 @@ textarea {
 
 .noteCard .btn {
   border-radius: 50%;
+/* Modal blur and login modal styles moved from index.html */
+.modal-blur {
   width: 2.2rem;
   height: 2.2rem;
+}
+#loginModal.show {
   display: flex;
   align-items: center;
+}
+#loginModal .modal-content {
   justify-content: center;
   padding: 0;
+}
 }
 
 .noteCard .btn i {
